@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "./src/",
+    "paths": {
+      "@/*": ["*"],
+      "application": ["/application/*", "/application"],
+      "domain": ["/domain/*", "/domain"],
+      "infrastructure": ["/infrastructure/*", "/infrastructure"],
+      "types": ["/types/*", "/types"]
+    },
+    "target": "ESNext",
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "exclude": [
+    "./node_modules/**/*",
+    "./dist/**/*"
+  ],
+  "include": ["./src"]
+}

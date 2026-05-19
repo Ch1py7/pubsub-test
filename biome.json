@@ -1,0 +1,25 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.9/schema.json",
+	"extends": ["@snowdrive/biome-config/biome.json"],
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
+	"linter": {
+		"rules": {
+			"correctness": {
+				"noGlobalDirnameFilename": "off"
+			},
+			"style": {
+				"noProcessEnv": "off",
+				"useImportType": "off"
+			}
+		}
+	},
+	"javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
+}

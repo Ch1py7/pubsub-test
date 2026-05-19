@@ -1,0 +1,19 @@
+{
+  "name": "pubsub-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:auth": "pnpm --filter auth tscs",
+    "dev:users": "pnpm --filter users tscs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "2.4.9",
+    "@snowdrive/biome-config": "^1.1.0"
+  }
+}
