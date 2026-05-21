@@ -10,7 +10,6 @@ export class AuthParser {
 			email: dbModel.email,
 			password: dbModel.password,
 			salt: dbModel.salt,
-			userId: dbModel.user_id,
 		})
 	}
 
@@ -22,7 +21,6 @@ export class AuthParser {
 			email: domainModel.email,
 			password: domainModel.password,
 			salt: domainModel.salt,
-			user_id: domainModel.userId,
 		}
 	}
 }

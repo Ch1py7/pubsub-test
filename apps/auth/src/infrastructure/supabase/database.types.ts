@@ -22,7 +22,6 @@ export type Database = {
           password: string
           salt: string
           updated_at: string
-          user_id: string
         }
         Insert: {
           created_at?: string
@@ -31,7 +30,6 @@ export type Database = {
           password: string
           salt: string
           updated_at?: string
-          user_id: string
         }
         Update: {
           created_at?: string
@@ -40,20 +38,12 @@ export type Database = {
           password?: string
           salt?: string
           updated_at?: string
-          user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "auth_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {
+          auth_id: string | null
           created_at: string
           id: string
           name: string
@@ -61,6 +51,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          auth_id?: string | null
           created_at?: string
           id?: string
           name: string
@@ -68,13 +59,22 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          auth_id?: string | null
           created_at?: string
           id?: string
           name?: string
           updated_at?: string
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_auth_id_fkey"
+            columns: ["auth_id"]
+            isOneToOne: true
+            referencedRelation: "auth"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -4,7 +4,7 @@ import { PubSubEvent } from '@/infrastructure/pubsub'
 
 export class RegisterUser {
 	private _authRepository: Dependencies['authRepository']
-  private _pubsub: Dependencies['pubsub']
+	private _pubsub: Dependencies['pubsub']
 	private _crypto: Dependencies['crypto']
 	private _cipher: Dependencies['cipher']
 
@@ -12,10 +12,10 @@ export class RegisterUser {
 		authRepository,
 		cipher,
 		crypto,
-    pubsub,
+		pubsub,
 	}: Pick<Dependencies, 'authRepository' | 'cipher' | 'crypto' | 'pubsub'>) {
 		this._authRepository = authRepository
-    this._pubsub = pubsub
+		this._pubsub = pubsub
 		this._cipher = cipher
 		this._crypto = crypto
 	}
@@ -26,27 +26,32 @@ export class RegisterUser {
 
 		const password = dto.password
 		const { hashedPassword, salt } = this._cipher.hashPassword(password)
-		const userId = this._crypto.randomUUID()
+		const authId = this._crypto.randomUUID()
 
 		const auth = new Auth({
-			id: this._crypto.randomUUID(),
+			id: authId,
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
 			email: dto.email,
 			password: hashedPassword,
 			salt,
-			userId,
 		})
 
-		await this._authRepository.save(auth)
-		const userEvent = this.createUserEvent({ ...dto })
-    this._pubsub.publish(userEvent)
+		try {
+			await this._authRepository.save(auth)
+			const userEvent = this.createUserEvent({ ...dto, authId })
+			console.log('publishing')
+			await this._pubsub.publish(userEvent)
+		} catch (_error) {
+			await this._authRepository.deleteById(authId)
+			throw new Error('Registration failed due to a network error. Please try again.')
+		}
 	}
 
-	private createUserEvent({ name, username }: UserEvent): PubSubEvent {
+	private createUserEvent({ name, username, authId }: UserEvent): PubSubEvent<UserEvent> {
 		return {
-			type: 'auth.user_event',
-			payload: { name, username },
+			type: 'auth.user_id_created',
+			payload: { name, username, authId },
 		}
 	}
 
@@ -60,4 +65,5 @@ export class RegisterUser {
 interface UserEvent {
 	name: string
 	username: string | null
+	authId: string
 }

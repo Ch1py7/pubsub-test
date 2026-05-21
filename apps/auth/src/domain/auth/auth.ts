@@ -2,7 +2,6 @@ export class Auth {
 	private _id: string
 	private _createdAt: number
 	private _updatedAt: number
-	private _userId: string
 	private _email: string
 	private _password: string
 	private _salt: string
@@ -11,7 +10,6 @@ export class Auth {
 		this._id = auth.id
 		this._createdAt = auth.createdAt
 		this._updatedAt = auth.updatedAt
-		this._userId = auth.userId
 		this._email = auth.email
 		this._password = auth.password
 		this._salt = auth.salt
@@ -27,10 +25,6 @@ export class Auth {
 
 	get updatedAt() {
 		return this._updatedAt
-	}
-
-	get userId() {
-		return this._userId
 	}
 
 	get email() {
@@ -52,6 +46,5 @@ interface IAuthConstructor {
 	updatedAt: number
 	password: string
 	salt: string
-	userId: string
 	email: string
 }

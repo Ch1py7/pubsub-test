@@ -13,13 +13,19 @@ export class AuthRepository implements IAuthRepository {
 		this._supabaseClient = supabaseClient
 	}
 
-	async save(auth: Auth) {
+	public async save(auth: Auth) {
 		const authData = this._authParser.toDbModel(auth)
+
+		await this._supabaseClient.from('auth').insert(authData)
 	}
 
 	public async findByEmail(email: string) {
 		const { data } = await this._supabaseClient.from('auth').select('*').eq('email', email).single()
 
 		return data && this._authParser.toDomain(data)
+	}
+
+	public async deleteById(id: string) {
+		await this._supabaseClient.from('auth').delete().eq('id', id)
 	}
 }
