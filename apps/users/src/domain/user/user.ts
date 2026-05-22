@@ -6,13 +6,13 @@ export class User {
 	private _username: string | null
 	private _auth_id: string
 
-	constructor(auth: IUserConstructor) {
-		this._id = auth.id
-		this._createdAt = auth.createdAt
-		this._updatedAt = auth.updatedAt
-		this._name = auth.name
-		this._username = auth.username
-		this._auth_id = auth.authId
+	constructor(user: IUserConstructor) {
+		this._id = user.id
+		this._createdAt = user.createdAt
+		this._updatedAt = user.updatedAt
+		this._name = user.name
+		this._username = user.username
+		this._auth_id = user.authId
 	}
 
 	get id() {
