@@ -27,11 +27,12 @@ export class RegisterUser {
 		const password = dto.password
 		const { hashedPassword, salt } = this._cipher.hashPassword(password)
 		const authId = this._crypto.randomUUID()
+		const now = Date.now()
 
 		const auth = new Auth({
 			id: authId,
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
+			createdAt: now,
+			updatedAt: now,
 			email: dto.email,
 			password: hashedPassword,
 			salt,
@@ -40,7 +41,6 @@ export class RegisterUser {
 		try {
 			await this._authRepository.save(auth)
 			const userEvent = this.createUserEvent({ ...dto, authId })
-			console.log('publishing')
 			await this._pubsub.publish(userEvent)
 		} catch (_error) {
 			await this._authRepository.deleteById(authId)
