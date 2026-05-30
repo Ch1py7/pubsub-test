@@ -4,7 +4,7 @@ export class User {
 	private _updatedAt: number
 	private _name: string
 	private _username: string | null
-	private _auth_id: string
+	private _authId: string
 
 	constructor(user: IUserConstructor) {
 		this._id = user.id
@@ -12,7 +12,7 @@ export class User {
 		this._updatedAt = user.updatedAt
 		this._name = user.name
 		this._username = user.username
-		this._auth_id = user.authId
+		this._authId = user.authId
 	}
 
 	get id() {
@@ -35,8 +35,8 @@ export class User {
 		return this._username
 	}
 
-	get auth_id() {
-		return this._auth_id
+	get authId() {
+		return this._authId
 	}
 }
 

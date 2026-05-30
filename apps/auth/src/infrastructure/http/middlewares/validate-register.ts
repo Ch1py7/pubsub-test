@@ -8,7 +8,12 @@ const RegisterRules: ValidationChain[] = [
 		.withMessage('Password must be at least 8 characters long')
 		.bail(),
 	body('name').trim().notEmpty().withMessage('Name is required').bail(),
-	body('username').trim().notEmpty().withMessage('Username is required').bail(),
+	body('username')
+		.optional({ values: 'falsy' })
+		.trim()
+		.isLength({ min: 4 })
+		.withMessage('Username must be at least 4 characters long')
+		.bail(),
 ]
 
 const validateRequest = (
@@ -20,7 +25,7 @@ const validateRequest = (
 	if (!errors.isEmpty()) {
 		res
 			.status(400)
-			.json({ message: 'An error occurred while register the user', errors: errors.array() })
+			.json({ message: 'Validation failed', errors: errors.array()})
 		return
 	}
 	next()

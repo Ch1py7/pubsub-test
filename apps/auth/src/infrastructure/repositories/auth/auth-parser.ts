@@ -13,7 +13,7 @@ export class AuthParser {
 		})
 	}
 
-	toDbModel(domainModel: AuthDomain): Database['public']['Tables']['auth']['Row'] {
+	toDbModel(domainModel: AuthDomain): Database['public']['Tables']['auth']['Insert'] {
 		return {
 			id: domainModel.id,
 			created_at: new Date(domainModel.createdAt).toISOString(),

@@ -1,4 +1,5 @@
 import { Auth } from '@/domain/auth/auth'
+import { EmailAlreadyExistsError } from '@/domain/auth/errors'
 import { CreateCommand } from './command'
 import { PubSubEvent } from '@/infrastructure/pubsub'
 
@@ -23,9 +24,7 @@ export class RegisterUser {
 	public async execute(dto: CreateCommand) {
 		const exists = await this._authRepository.findByEmail(dto.email)
 		this.assertEmailNotExists(exists)
-
-		const password = dto.password
-		const { hashedPassword, salt } = this._cipher.hashPassword(password)
+		const { hashedPassword, salt } = this._cipher.hashPassword(dto.password)
 		const authId = this._crypto.randomUUID()
 		const now = Date.now()
 
@@ -38,13 +37,14 @@ export class RegisterUser {
 			salt,
 		})
 
+		await this._authRepository.save(auth)
+
 		try {
-			await this._authRepository.save(auth)
 			const userEvent = this.createUserEvent({ ...dto, authId })
 			await this._pubsub.publish(userEvent)
-		} catch (_error) {
+		} catch (error) {
 			await this._authRepository.deleteById(authId)
-			throw new Error('Registration failed due to a network error. Please try again.')
+			throw error
 		}
 	}
 
@@ -57,7 +57,7 @@ export class RegisterUser {
 
 	private assertEmailNotExists(user: Auth | null) {
 		if (user) {
-			throw new Error('Email is already registered.')
+			throw new EmailAlreadyExistsError()
 		}
 	}
 }

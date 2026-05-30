@@ -8,7 +8,7 @@ export class AuthRepository implements IAuthRepository {
 	constructor({
 		authParser,
 		supabaseClient,
-	}: Pick<Dependencies, 'cipher' | 'supabaseClient' | 'authParser'>) {
+	}: Pick<Dependencies, 'supabaseClient' | 'authParser'>) {
 		this._authParser = authParser
 		this._supabaseClient = supabaseClient
 	}
@@ -16,16 +16,23 @@ export class AuthRepository implements IAuthRepository {
 	public async save(auth: Auth) {
 		const authData = this._authParser.toDbModel(auth)
 
-		await this._supabaseClient.from('auth').insert(authData)
+		const { error } = await this._supabaseClient.from('auth').insert(authData)
+		if (error) throw error
 	}
 
 	public async findByEmail(email: string) {
-		const { data } = await this._supabaseClient.from('auth').select('*').eq('email', email).single()
+		const { data, error } = await this._supabaseClient
+			.from('auth')
+			.select('*')
+			.eq('email', email)
+			.maybeSingle()
 
-		return data && this._authParser.toDomain(data)
+		if (error) throw error
+		return data ? this._authParser.toDomain(data) : null
 	}
 
 	public async deleteById(id: string) {
-		await this._supabaseClient.from('auth').delete().eq('id', id)
+		const { error } = await this._supabaseClient.from('auth').delete().eq('id', id)
+		if (error) throw error
 	}
 }

@@ -1,6 +1,4 @@
 import 'module-alias/register'
-import dotenv from 'dotenv'
-dotenv.config()
 import { container } from './container'
 import { PubSubEvent, UserEvent } from './infrastructure/pubsub'
 

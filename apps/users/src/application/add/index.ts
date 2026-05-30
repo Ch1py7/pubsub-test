@@ -1,4 +1,5 @@
 import { User } from '@/domain/user/user'
+import { UserAlreadyExistsError } from '@/domain/user/errors'
 import { CreateCommand } from './command'
 
 export class AddUser {
@@ -22,6 +23,15 @@ export class AddUser {
 			name: dto.name,
 			username: dto.username,
 		})
-		await this._userRepository.save(user)
+
+		try {
+			await this._userRepository.save(user)
+		} catch (err) {
+			if (err instanceof UserAlreadyExistsError) {
+				console.log(`Event for authId ${dto.authId} already processed, skipping`)
+				return
+			}
+			throw err
+		}
 	}
 }

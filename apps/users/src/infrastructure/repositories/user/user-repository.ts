@@ -1,5 +1,8 @@
 import { User } from '@/domain/user/user'
+import { UserAlreadyExistsError } from '@/domain/user/errors'
 import type { IUserRepository } from '@/domain/repositories/user-repository'
+
+const POSTGRES_UNIQUE_VIOLATION = '23505'
 
 export class UserRepository implements IUserRepository {
 	private _userParser: Dependencies['userParser']
@@ -13,10 +16,18 @@ export class UserRepository implements IUserRepository {
 	public async save(user: User) {
 		const userData = this._userParser.toDbModel(user)
 
-		await this._supabaseClient.from('users').insert(userData)
+		const { error } = await this._supabaseClient.from('users').insert(userData)
+
+		if (error) {
+			if (error.code === POSTGRES_UNIQUE_VIOLATION) {
+				throw new UserAlreadyExistsError(user.authId)
+			}
+			throw error
+		}
 	}
 
 	public async deleteById(id: string) {
-		await this._supabaseClient.from('auth').delete().eq('id', id)
+		const { error } = await this._supabaseClient.from('users').delete().eq('id', id)
+		if (error) throw error
 	}
 }

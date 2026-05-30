@@ -13,14 +13,14 @@ export class UserParser {
 		})
 	}
 
-	toDbModel(domainModel: UserDomain): Database['public']['Tables']['users']['Row'] {
+	toDbModel(domainModel: UserDomain): Database['public']['Tables']['users']['Insert'] {
 		return {
 			id: domainModel.id,
 			created_at: new Date(domainModel.createdAt).toISOString(),
 			updated_at: new Date(domainModel.updatedAt).toISOString(),
 			name: domainModel.name,
 			username: domainModel.username,
-			auth_id: domainModel.auth_id
+			auth_id: domainModel.authId
 		}
 	}
 }

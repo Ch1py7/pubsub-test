@@ -41,22 +41,10 @@ export class CryptoCipher {
 		return this._crypto.createHash('md5').update(value).digest('hex')
 	}
 
-	public verifyJwt = (token: string) => {
-		const decoded = jwt.verify(token, this._SECRET) as JwtContent & JwtPayload
-		if (decoded.exp < Date.now()) {
-			throw new jwt.TokenExpiredError('Token expired', new Date(decoded.exp))
-		}
-
-		return decoded
-	}
+	public verifyJwt = (token: string) => jwt.verify(token, this._SECRET) as JwtContent & JwtPayload
 
 	public signJwt = (payload: JwtContent) => {
-		return jwt.sign(
-			{
-				...payload,
-			},
-			this._SECRET
-		)
+		return jwt.sign(payload, this._SECRET)
 	}
 }
 
