@@ -54,14 +54,3 @@ export class PubSubClient {
 		})
 	}
 }
-
-export interface PubSubEvent<T> {
-	type: string
-	payload: T
-}
-
-export interface UserEvent {
-	name: string
-	username: string | null
-	authId: string
-}

@@ -6,6 +6,8 @@ import { UserParser } from './infrastructure/repositories/user/user-parser'
 import { UserRepository } from './infrastructure/repositories/user/user-repository'
 import { AddUser } from './application/add'
 import { PubSubClient } from './infrastructure/pubsub'
+import { AuthEventsSubscriber } from './infrastructure/messaging/auth-events-subscriber'
+import { EVENT_TYPES } from './infrastructure/messaging/event-types'
 
 export const container = createContainer<Dependencies>({
 	injectionMode: InjectionMode.PROXY,
@@ -14,6 +16,7 @@ export const container = createContainer<Dependencies>({
 container.register({
 	crypto: asValue(crypto),
 	config: asValue(config),
+	events: asValue(EVENT_TYPES),
 
 	// Use Cases
 	addUser: asClass(AddUser),
@@ -29,12 +32,16 @@ container.register({
 
 	// Parser
 	userParser: asClass(UserParser),
+
+	// Messaging
+	authSubscriber: asClass(AuthEventsSubscriber),
 })
 
 declare global {
 	interface Dependencies {
 		crypto: typeof crypto
 		config: typeof config
+		events: typeof EVENT_TYPES
 
 		// Use Cases
 		addUser: AddUser
@@ -50,5 +57,8 @@ declare global {
 
 		// Parser
 		userParser: UserParser
+
+		// Messaging
+		authSubscriber: AuthEventsSubscriber
 	}
 }
